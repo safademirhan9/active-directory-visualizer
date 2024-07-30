@@ -1,3 +1,3 @@
 {
-  "recommendations": ["dbaeumer.vscode-eslint", "ms-python.black-formatter"]
+  "recommendations": ["dbaeumer.vscode-eslint", "ms-python.black-formatter", "esbenp.prettier-vscode"]
 }
