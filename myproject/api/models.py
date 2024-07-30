@@ -1,4 +1,4 @@
-from neomodel import StructuredNode, StringProperty, DateTimeProperty, RelationshipTo
+from neomodel import StructuredNode, StringProperty, DateTimeProperty, RelationshipTo, RelationshipFrom
 
 class User(StructuredNode):
     distinguished_name = StringProperty(unique_index=True)
