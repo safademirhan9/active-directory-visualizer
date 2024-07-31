@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Home from './components/Home';
 import ComputersPage from './pages/ComputersPage';
 import GroupsPage from './pages/GroupsPage';
 import UsersPage from './pages/UsersPage';
@@ -10,13 +11,16 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route exact path="/computers" component={ComputersPage} />
-        <Route path="/computers/:DistinguishedName" component={ComputerDetail} />
-        <Route exact path="/users" component={UsersPage} />
-        <Route path="/users/:DistinguishedName" component={UserDetail} />
-        <Route exact path="/groups" component={GroupsPage} />
-        <Route path="/groups/:DistinguishedName" component={GroupDetail} />
-        <Route path="/" component={() => <div>Welcome to the AD Viewer</div>} />
+        <Route index path="/" element={<Home />} />
+        <Route path="/computers" element={<ComputersPage />}>
+          <Route path=":DistinguishedName" element={<ComputerDetail />} />
+        </Route>
+        <Route path="/users" element={<UsersPage />}>
+          <Route path=":DistinguishedName" element={<UserDetail />} />
+        </Route>
+        <Route path="/groups" element={<GroupsPage />}>
+          <Route path=":DistinguishedName" element={<GroupDetail />} />
+        </Route>
       </Routes>
     </Router>
   );
