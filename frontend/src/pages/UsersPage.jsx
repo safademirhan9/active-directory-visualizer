@@ -1,17 +1,19 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
-import { fetchUsers } from '../api/users';
+import axios from 'axios';
 
 const UsersPage = () => {
   const [page, setPage] = useState(1);
-  const [pageSize] = useState(10);
+  // const [pageSize] = useState(10);
 
-  const { data, isLoading, error } = useQuery(['users', page, pageSize], () => fetchUsers(page, pageSize), {
-    keepPreviousData: true,
-  });
+  // Custom API function example
+  const getUsers = async () => {
+    const response = await axios.get('/users/');
+    return response.data;
+  };
 
-  console.log(data);
+  const { data, error, isLoading } = useQuery('users', getUsers);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error fetching data</div>;

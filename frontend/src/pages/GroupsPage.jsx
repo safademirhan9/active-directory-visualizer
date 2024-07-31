@@ -1,11 +1,16 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
-import { fetchGroups } from '../api/groups';
+import axios from 'axios';
 
 const GroupsPage = () => {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
+
+  const fetchGroups = async () => {
+    const response = await axios.get('/groups');
+    return response.data;
+  };
 
   const { data, isLoading, error } = useQuery(['groups', page, pageSize], () => fetchGroups(page, pageSize), {
     keepPreviousData: true,

@@ -1,17 +1,27 @@
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
-import { fetchComputers } from '../api/computers';
+import axios from 'axios';
 
 const ComputersPage = () => {
   const [page, setPage] = useState(1);
-  const [pageSize] = useState(10); // You can change the page size if needed
+  const [pageSize] = useState(10);
+
+  //  const fetchComputers = async (page = 1, pageSize = 10) => {
+  //   const response = await api.get('/computers', {
+  //     params: { page, pageSize },
+  //   });
+  //   return response.data;
+  // };
+
+  const fetchComputers = async () => {
+    const response = await axios.get('/computers');
+    return response.data;
+  };
 
   const { data, isLoading, error } = useQuery(['computers', page, pageSize], () => fetchComputers(page, pageSize), {
     keepPreviousData: true, // Keeps previous data while fetching new data
   });
-
-  console.log;
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error fetching data</div>;

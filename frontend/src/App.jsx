@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './components/Home';
+import Home from './pages/Home';
 import ComputersPage from './pages/ComputersPage';
 import GroupsPage from './pages/GroupsPage';
 import UsersPage from './pages/UsersPage';
-import ComputerDetail from './components/ComputerDetail';
-import UserDetail from './components/UserDetail';
-import GroupDetail from './components/GroupDetail';
+import ComputerDetail from './pages/ComputerDetail';
+import UserDetail from './pages/UserDetail';
+import GroupDetail from './pages/GroupDetail';
 
 function App() {
   return (

@@ -1,10 +1,15 @@
 import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
-import { fetchUserById } from '../api/users';
+import axios from 'axios';
 
 const UserDetail = () => {
   const { id } = useParams();
   const { data: user, isLoading, error } = useQuery(['user', id], () => fetchUserById(id));
+
+  const fetchUserById = async (id) => {
+    const response = await axios.get(`/users/${id}`);
+    return response.data;
+  };
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error fetching data</div>;
