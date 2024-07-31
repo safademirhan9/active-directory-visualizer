@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Table, Spin, Flex, Typography } from 'antd';
+import { Table, Spin, Flex, Typography, Popconfirm, notification } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
 
 const GroupsPage = () => {
   const [page, setPage] = useState(1);
@@ -43,6 +44,26 @@ const GroupsPage = () => {
     }
   };
 
+  const handleDelete = async (distinguished_name) => {
+    setLoading(true);
+    try {
+      await axios.delete(`/groups/${distinguished_name}/`);
+      setGroups(groups.filter((group) => group.distinguished_name !== distinguished_name));
+      notification.success({
+        message: 'SUCCESS',
+        description: 'Group deleted successfully',
+      });
+    } catch (error) {
+      console.error(error);
+      notification.error({
+        message: 'ERROR',
+        description: 'An error occurred while deleting the group',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const columns = [
     {
       title: 'Distinguished Name',
@@ -70,6 +91,18 @@ const GroupsPage = () => {
       dataIndex: 'when_created',
       key: 'when_created',
       render: (text) => new Date(text).toLocaleString(),
+    },
+    {
+      key: 'action',
+      render: (text, record) => (
+        <Popconfirm
+          title="Are you sure to delete this computer?"
+          onConfirm={() => handleDelete(record.distinguished_name)}
+          okText="Yes"
+          cancelText="No">
+          <DeleteOutlined style={{ color: 'red', cursor: 'pointer' }} />
+        </Popconfirm>
+      ),
     },
   ];
 
