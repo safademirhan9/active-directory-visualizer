@@ -1,53 +1,87 @@
-import { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { Table, Spin, Flex, Typography } from 'antd';
 
 const ComputersPage = () => {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
+  const [computers, setComputers] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
 
-  //  const fetchComputers = async (page = 1, pageSize = 10) => {
-  //   const response = await api.get('/computers', {
-  //     params: { page, pageSize },
-  //   });
-  //   return response.data;
-  // };
+  useEffect(() => {
+    setLoading(true);
+    const fetchComputers = async () => {
+      try {
+        // TODO: Add pagination support
+        const response = await axios.get('/computers/');
+        console.log(response.data);
+        setComputers(response.data.results);
+        setTotalPages(Math.ceil(response.data.count / pageSize));
+      } catch (error) {
+        console.error('Error fetching computers:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const fetchComputers = async () => {
-    const response = await axios.get('/computers');
-    return response.data;
+    fetchComputers();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handlePageChange = async (page) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`/computers/?page=${page}&pageSize=${pageSize}`);
+      setComputers(response.data.results);
+      setTotalPages(Math.ceil(response.data.count / pageSize));
+      setPage(page);
+    } catch (error) {
+      console.error('Error fetching computers:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const { data, isLoading, error } = useQuery(['computers', page, pageSize], () => fetchComputers(page, pageSize), {
-    keepPreviousData: true, // Keeps previous data while fetching new data
-  });
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error fetching data</div>;
-
-  const { results: computers, totalPages } = data;
+  const columns = [
+    {
+      title: 'Distinguished Name',
+      dataIndex: 'distinguished_name',
+      key: 'distinguished_name',
+      render: (text) => <Link to={`/computers/${text}`}>{text}</Link>,
+    },
+    {
+      title: 'ObjectSid',
+      dataIndex: 'object_sid',
+      key: 'object_sid',
+    },
+    {
+      title: ' ntSecurityDescriptor',
+      dataIndex: 'nt_security_descriptor',
+      key: 'nt_security_descriptor',
+    },
+    {
+      title: ' servicePrincipalName',
+      dataIndex: 'service_principal_name',
+      key: 'service_principal_name',
+    },
+    {
+      title: ' Created At',
+      dataIndex: 'when_created',
+      key: 'when_created',
+      render: (text) => new Date(text).toLocaleString(),
+    },
+  ];
 
   return (
-    <div>
-      <h1>Computers</h1>
-      <ul>
-        {computers.map((computer) => (
-          <li key={computer.distinguished_name}>
-            <Link to={`/computers/${computer.distinguished_name}`}>{computer.distinguished_name}</Link>
-          </li>
-        ))}
-      </ul>
-      <div>
-        <button onClick={() => setPage((old) => Math.max(old - 1, 1))} disabled={page === 1}>
-          Previous
-        </button>
-        <span> Page {page} </span>
-        <button onClick={() => setPage((old) => (data.hasNextPage ? old + 1 : old))} disabled={page === totalPages}>
-          Next
-        </button>
-      </div>
-    </div>
+    <Flex vertical justify="center">
+      <Typography.Title level={2} align="center">
+        Computers
+      </Typography.Title>
+      <Spin spinning={loading}>
+        <Table dataSource={computers} columns={columns} rowKey="distinguished_name" />
+      </Spin>
+    </Flex>
   );
 };
 

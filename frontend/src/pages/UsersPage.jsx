@@ -1,45 +1,120 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useQuery } from 'react-query';
 import axios from 'axios';
+import { Table, Spin, Flex, Typography, notification, Popconfirm } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
 
 const UsersPage = () => {
   const [page, setPage] = useState(1);
-  // const [pageSize] = useState(10);
+  const [pageSize] = useState(10);
+  const [users, setUsers] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
 
-  // Custom API function example
-  const getUsers = async () => {
-    const response = await axios.get('/users/');
-    return response.data;
+  useEffect(() => {
+    setLoading(true);
+    const fetchUsers = async () => {
+      try {
+        // TODO: Add pagination support
+        const response = await axios.get('/users/');
+        console.log(response.data);
+        setUsers(response.data.results);
+        setTotalPages(Math.ceil(response.data.count / pageSize));
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handlePageChange = async (page) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`/users/?page=${page}&pageSize=${pageSize}`);
+      setUsers(response.data.results);
+      setTotalPages(Math.ceil(response.data.count / pageSize));
+      setPage(page);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const { data, error, isLoading } = useQuery('users', getUsers);
+  const handleDelete = async (distinguished_name) => {
+    setLoading(true);
+    try {
+      await axios.delete(`/users/${distinguished_name}/`);
+      setUsers(users.filter((user) => user.distinguished_name !== distinguished_name));
+      notification.success({
+        message: 'BAŞARILI',
+        description: 'Kullanıcı başarıyla silindi',
+      });
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      notification.error({
+        message: 'HATA',
+        description: 'Kullanıcı silinirken bir hata oluştu',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error fetching data</div>;
-
-  const { results: users, totalPages } = data;
+  const columns = [
+    {
+      title: 'Distinguished Name',
+      dataIndex: 'distinguished_name',
+      key: 'distinguished_name',
+      render: (text) => <Link to={`/users/${text}`}>{text}</Link>,
+    },
+    {
+      title: 'ObjectSid',
+      dataIndex: 'object_sid',
+      key: 'object_sid',
+    },
+    {
+      title: ' ntSecurityDescriptor',
+      dataIndex: 'nt_security_descriptor',
+      key: 'nt_security_descriptor',
+    },
+    {
+      title: ' servicePrincipalName',
+      dataIndex: 'service_principal_name',
+      key: 'service_principal_name',
+    },
+    {
+      title: ' Created At',
+      dataIndex: 'when_created',
+      key: 'when_created',
+      render: (text) => new Date(text).toLocaleString(),
+    },
+    {
+      key: 'action',
+      render: (text, record) => (
+        <Popconfirm
+          title="Are you sure to delete this user?"
+          onConfirm={() => handleDelete(record.distinguished_name)}
+          okText="Yes"
+          cancelText="No">
+          <DeleteOutlined style={{ color: 'red', cursor: 'pointer' }} />
+        </Popconfirm>
+      ),
+    },
+  ];
 
   return (
-    <div>
-      <h1>Users</h1>
-      <ul>
-        {users.map((user) => (
-          <li key={user.distinguished_name}>
-            <Link to={`/users/${user.distinguished_name}`}>{user.distinguished_name}</Link>
-          </li>
-        ))}
-      </ul>
-      <div>
-        <button onClick={() => setPage((old) => Math.max(old - 1, 1))} disabled={page === 1}>
-          Previous
-        </button>
-        <span> Page {page} </span>
-        <button onClick={() => setPage((old) => (data.hasNextPage ? old + 1 : old))} disabled={page === totalPages}>
-          Next
-        </button>
-      </div>
-    </div>
+    <Flex vertical justify="center">
+      <Typography.Title level={2} align="center">
+        Users
+      </Typography.Title>
+      <Spin spinning={loading}>
+        <Table dataSource={users} columns={columns} rowKey="distinguished_name" />
+      </Spin>
+    </Flex>
   );
 };
 
