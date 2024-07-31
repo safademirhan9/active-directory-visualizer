@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Table, Spin, Flex, Typography } from 'antd';
+import { Table, Spin, Flex, Typography, Popconfirm, notification, theme } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
+import CreateComputer from './CreateComputer';
 
 const ComputersPage = () => {
+  const { token } = theme.useToken();
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
   const [computers, setComputers] = useState([]);
@@ -43,6 +46,26 @@ const ComputersPage = () => {
     }
   };
 
+  const handleDelete = async (distinguished_name) => {
+    setLoading(true);
+    try {
+      await axios.delete(`/computers/${distinguished_name}/`);
+      setComputers(computers.filter((computer) => computer.distinguished_name !== distinguished_name));
+      notification.success({
+        message: 'SUCCESS',
+        description: 'Computer deleted successfully',
+      });
+    } catch (error) {
+      console.error(error);
+      notification.error({
+        message: 'ERROR',
+        description: 'An error occurred while deleting the computer',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const columns = [
     {
       title: 'Distinguished Name',
@@ -71,13 +94,26 @@ const ComputersPage = () => {
       key: 'when_created',
       render: (text) => new Date(text).toLocaleString(),
     },
+    {
+      key: 'action',
+      render: (text, record) => (
+        <Popconfirm
+          title="Are you sure to delete this computer?"
+          onConfirm={() => handleDelete(record.distinguished_name)}
+          okText="Yes"
+          cancelText="No">
+          <DeleteOutlined style={{ color: 'red', cursor: 'pointer' }} />
+        </Popconfirm>
+      ),
+    },
   ];
 
   return (
-    <Flex vertical justify="center">
+    <Flex vertical justify="center" gap={token.size} style={{ padding: token.padding }}>
       <Typography.Title level={2} align="center">
         Computers
       </Typography.Title>
+      <CreateComputer computers={computers} setComputers={setComputers} />
       <Spin spinning={loading}>
         <Table dataSource={computers} columns={columns} rowKey="distinguished_name" />
       </Spin>

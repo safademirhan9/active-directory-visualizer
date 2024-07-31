@@ -32,6 +32,25 @@ class UserDetail(APIView):
         except User.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+    def put(self, request, distinguished_name):
+        try:
+            user = User.nodes.get(distinguished_name=distinguished_name)
+            serializer = UserSerializer(user, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def delete(self, request, distinguished_name):
+        try:
+            user = User.nodes.get(distinguished_name=distinguished_name)
+            user.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
 
 class ComputerList(APIView):
     def get(self, request):
@@ -58,6 +77,25 @@ class ComputerDetail(APIView):
         except Computer.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+    def put(self, request, distinguished_name):
+        try:
+            computer = Computer.nodes.get(distinguished_name=distinguished_name)
+            serializer = ComputerSerializer(computer, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Computer.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def delete(self, request, distinguished_name):
+        try:
+            computer = Computer.nodes.get(distinguished_name=distinguished_name)
+            computer.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Computer.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
 
 class GroupList(APIView):
     def get(self, request):
@@ -81,5 +119,24 @@ class GroupDetail(APIView):
             group = Group.nodes.get(distinguished_name=distinguished_name)
             serializer = GroupSerializer(group)
             return Response(serializer.data)
+        except Group.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def put(self, request, distinguished_name):
+        try:
+            group = Group.nodes.get(distinguished_name=distinguished_name)
+            serializer = GroupSerializer(group, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Group.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def delete(self, request, distinguished_name):
+        try:
+            group = Group.nodes.get(distinguished_name=distinguished_name)
+            group.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
         except Group.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
