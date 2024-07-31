@@ -12,7 +12,7 @@ const ComputerDetail = () => {
   return (
     <div>
       <h1>Computer Details</h1>
-      <p>DistinguishedName: {computer.DistinguishedName}</p>
+      <p>Distinguished Name: {computer.distinguished_name}</p>
       <p>ObjectSid: {computer.ObjectSid}</p>
       {/* Add more computer details here */}
     </div>

@@ -21,8 +21,8 @@ const GroupsPage = () => {
       <h1>Groups</h1>
       <ul>
         {groups.map((group) => (
-          <li key={group.DistinguishedName}>
-            <Link to={`/groups/${group.DistinguishedName}`}>{group.DistinguishedName}</Link>
+          <li key={group.distinguished_name}>
+            <Link to={`/groups/${group.distinguished_name}`}>{group.distinguished_name}</Link>
           </li>
         ))}
       </ul>

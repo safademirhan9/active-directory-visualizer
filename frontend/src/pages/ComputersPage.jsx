@@ -11,6 +11,8 @@ const ComputersPage = () => {
     keepPreviousData: true, // Keeps previous data while fetching new data
   });
 
+  console.log;
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error fetching data</div>;
 
@@ -21,8 +23,8 @@ const ComputersPage = () => {
       <h1>Computers</h1>
       <ul>
         {computers.map((computer) => (
-          <li key={computer.DistinguishedName}>
-            <Link to={`/computers/${computer.DistinguishedName}`}>{computer.DistinguishedName}</Link>
+          <li key={computer.distinguished_name}>
+            <Link to={`/computers/${computer.distinguished_name}`}>{computer.distinguished_name}</Link>
           </li>
         ))}
       </ul>

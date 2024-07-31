@@ -12,7 +12,7 @@ const UserDetail = () => {
   return (
     <div>
       <h1>User Details</h1>
-      <p>DistinguishedName: {user.DistinguishedName}</p>
+      <p>Distinguished Name: {user.distinguished_name}</p>
       <p>ObjectSid: {user.ObjectSid}</p>
       {/* Add more user details here */}
     </div>

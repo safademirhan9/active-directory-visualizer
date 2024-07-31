@@ -16,7 +16,7 @@ function App() {
           <Route path=":DistinguishedName" element={<ComputerDetail />} />
         </Route>
         <Route path="/users" element={<UsersPage />}>
-          <Route path=":DistinguishedName" element={<UserDetail />} />
+          <Route path="/users/:DistinguishedName" element={<UserDetail />} />
         </Route>
         <Route path="/groups" element={<GroupsPage />}>
           <Route path=":DistinguishedName" element={<GroupDetail />} />

@@ -11,6 +11,8 @@ const UsersPage = () => {
     keepPreviousData: true,
   });
 
+  console.log(data);
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error fetching data</div>;
 
@@ -21,8 +23,8 @@ const UsersPage = () => {
       <h1>Users</h1>
       <ul>
         {users.map((user) => (
-          <li key={user.DistinguishedName}>
-            <Link to={`/users/${user.DistinguishedName}`}>{user.DistinguishedName}</Link>
+          <li key={user.distinguished_name}>
+            <Link to={`/users/${user.distinguished_name}`}>{user.distinguished_name}</Link>
           </li>
         ))}
       </ul>

@@ -12,7 +12,7 @@ const GroupDetail = () => {
   return (
     <div>
       <h1>Group Details</h1>
-      <p>DistinguishedName: {group.DistinguishedName}</p>
+      <p>Distinguished Name: {group.distinguished_name}</p>
       <p>ObjectSid: {group.ObjectSid}</p>
       {/* Add more group details here */}
     </div>
