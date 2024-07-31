@@ -4,7 +4,7 @@ import { Button, DatePicker, Form, Input, Modal, notification } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 
-const CreateUser = ({ users, setUsers }) => {
+const CreateGroup = ({ groups, setGroups }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -12,12 +12,11 @@ const CreateUser = ({ users, setUsers }) => {
   const handleCreate = async (values) => {
     setLoading(true);
     try {
-      const response = await axios.post('/users/', values);
-      console.log(users);
-      setUsers([...users, response.data]);
+      const response = await axios.post('/groups/', values);
+      setGroups([...groups, response.data]);
       notification.success({
         message: 'SUCCESS',
-        description: 'User created successfully',
+        description: 'Group created successfully',
       });
       form.resetFields();
       setIsModalVisible(false);
@@ -39,10 +38,10 @@ const CreateUser = ({ users, setUsers }) => {
         type="primary"
         onClick={() => setIsModalVisible(true)}
         style={{ width: '15%' }}>
-        Create User
+        Create Group
       </Button>
       <Modal
-        title="Create User"
+        title="Create Group"
         open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         onOk={() => form.submit()}
@@ -84,9 +83,9 @@ const CreateUser = ({ users, setUsers }) => {
   );
 };
 
-CreateUser.propTypes = {
-  users: PropTypes.array.isRequired,
-  setUsers: PropTypes.func.isRequired,
+CreateGroup.propTypes = {
+  groups: PropTypes.array.isRequired,
+  setGroups: PropTypes.func.isRequired,
 };
 
-export default CreateUser;
+export default CreateGroup;

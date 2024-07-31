@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Table, Spin, Flex, Typography, Popconfirm, notification } from 'antd';
+import { Table, Spin, Flex, Typography, Popconfirm, notification, theme } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
+import CreateGroup from './CreateGroup';
 
 const GroupsPage = () => {
+  const { token } = theme.useToken();
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
   const [groups, setGroups] = useState([]);
@@ -107,10 +109,11 @@ const GroupsPage = () => {
   ];
 
   return (
-    <Flex vertical justify="center">
+    <Flex vertical justify="center" gap={token.size} style={{ padding: token.padding }}>
       <Typography.Title level={2} align="center">
         Groups
       </Typography.Title>
+      <CreateGroup groups={groups} setGroups={setGroups} />
       <Spin spinning={loading}>
         <Table dataSource={groups} columns={columns} rowKey="distinguished_name" />
       </Spin>

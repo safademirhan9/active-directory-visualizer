@@ -4,7 +4,7 @@ import { Button, DatePicker, Form, Input, Modal, notification } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 
-const CreateUser = ({ users, setUsers }) => {
+const CreateComputer = ({ computers, setComputers }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -12,12 +12,11 @@ const CreateUser = ({ users, setUsers }) => {
   const handleCreate = async (values) => {
     setLoading(true);
     try {
-      const response = await axios.post('/users/', values);
-      console.log(users);
-      setUsers([...users, response.data]);
+      const response = await axios.post('/computers/', values);
+      setComputers([...computers, response.data]);
       notification.success({
         message: 'SUCCESS',
-        description: 'User created successfully',
+        description: 'Computer created successfully',
       });
       form.resetFields();
       setIsModalVisible(false);
@@ -39,10 +38,10 @@ const CreateUser = ({ users, setUsers }) => {
         type="primary"
         onClick={() => setIsModalVisible(true)}
         style={{ width: '15%' }}>
-        Create User
+        Create Computer
       </Button>
       <Modal
-        title="Create User"
+        title="Create Computer"
         open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         onOk={() => form.submit()}
@@ -84,9 +83,9 @@ const CreateUser = ({ users, setUsers }) => {
   );
 };
 
-CreateUser.propTypes = {
-  users: PropTypes.array.isRequired,
-  setUsers: PropTypes.func.isRequired,
+CreateComputer.propTypes = {
+  computers: PropTypes.array.isRequired,
+  setComputers: PropTypes.func.isRequired,
 };
 
-export default CreateUser;
+export default CreateComputer;

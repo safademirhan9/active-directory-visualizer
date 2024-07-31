@@ -19,7 +19,6 @@ const UsersPage = () => {
       try {
         // TODO: Add pagination support
         const response = await axios.get('/users/');
-        console.log(response.data);
         setUsers(response.data.results);
         setTotalPages(Math.ceil(response.data.count / pageSize));
       } catch (error) {
@@ -113,7 +112,7 @@ const UsersPage = () => {
       <Typography.Title level={2} align="center">
         Users
       </Typography.Title>
-      <CreateUser user={users} setUsers={setUsers} />
+      <CreateUser users={users} setUsers={setUsers} />
       <Spin spinning={loading}>
         <Table dataSource={users} columns={columns} rowKey="distinguished_name" />
       </Spin>
