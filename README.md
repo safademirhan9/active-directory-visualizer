@@ -5,7 +5,9 @@
 This project is designed to visualize objects within an Active Directory (AD) environment, capture various attributes of these objects, and store them in a Neo4j database. It consists of three main components:
 
 **1. Core (C#):** Scans the AD environment for User, Computer, and Group objects, retrieves their attributes, and stores the data in a Neo4j database.
+
 **2. Backend (Python/Django):** Provides a REST API to interact with the data stored in Neo4j.
+
 **3. Frontend (React):** Visualizes the data retrieved from the backend API.
 
 ## Table of Contents
