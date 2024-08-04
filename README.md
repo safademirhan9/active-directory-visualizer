@@ -15,7 +15,7 @@ This project is designed to visualize objects within an Active Directory (AD) en
 - [Prerequisites](#Prerequisites)
 - [Setting up Active Directory](#Setting-up-Active-Directory)
 - [Setting up Neo4j](#Setting-up-Neo4j)
-- [Core C# Setup](#core-c-setup)
+- [Core (C#) Setup](#core-c-setup)
 - [Backend (Python/Django) Setup](#backend-pythondjango-setup)
 - [Frontend (React) Setup](#frontend-react-setup)
 - [Running the Application](#Running-the-Application)
@@ -63,7 +63,7 @@ This project is designed to visualize objects within an Active Directory (AD) en
 - Log in with the default credentials (neo4j / neo4j) and change the password.
 - Create constraints and indexes as necessary.
 
-## Core C# Setup
+## Core (C#) Setup
 
 **1. Install .NET SDK:**
 
