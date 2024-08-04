@@ -13,11 +13,10 @@ This project is designed to visualize objects within an Active Directory (AD) en
 - [Prerequisites](#Prerequisites)
 - [Setting up Active Directory](#Setting-up-Active-Directory)
 - [Setting up Neo4j](#Setting-up-Neo4j)
-- [Core (C#) Setup](<#Core-(C#)-Setup>)
+- [Core C# Setup](<#Core-(C#)-Setup>)
 - [Backend (Python/Django) Setup](<#Backend-(Python/Django)-Setup>)
 - [Frontend (React) Setup](<#Frontend-(React)-Setup>)
 - [Running the Application](#Running-the-Application)
-- [Notes](#Notes)
 
 ## Prerequisites
 
