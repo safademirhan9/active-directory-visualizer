@@ -7,38 +7,32 @@ import CreateComputer from './CreateComputer';
 
 const ComputersPage = () => {
   const { token } = theme.useToken();
-  const [page, setPage] = useState(1);
-  const [pageSize] = useState(10);
   const [computers, setComputers] = useState([]);
-  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
 
   useEffect(() => {
-    setLoading(true);
-    const fetchComputers = async () => {
-      try {
-        // TODO: Add pagination support
-        const response = await axios.get('/computers/');
-        console.log(response.data);
-        setComputers(response.data.results);
-        setTotalPages(Math.ceil(response.data.count / pageSize));
-      } catch (error) {
-        console.error('Error fetching computers:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    fetchComputers(pagination.current, pagination.pageSize);
+  }, [pagination.current, pagination.pageSize]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    fetchComputers();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const handlePageChange = async (page) => {
+  const fetchComputers = async (page, pageSize) => {
     setLoading(true);
     try {
-      const response = await axios.get(`/computers/?page=${page}&pageSize=${pageSize}`);
+      const response = await axios.get('/computers/', {
+        params: {
+          page: page,
+          page_size: pageSize,
+        },
+      });
       setComputers(response.data.results);
-      setTotalPages(Math.ceil(response.data.count / pageSize));
-      setPage(page);
+      setPagination({
+        ...pagination,
+        total: response.data.count,
+      });
     } catch (error) {
       console.error('Error fetching computers:', error);
     } finally {
@@ -64,6 +58,14 @@ const ComputersPage = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleTableChange = (newPagination) => {
+    setPagination({
+      ...pagination,
+      current: newPagination.current,
+      pageSize: newPagination.pageSize,
+    });
   };
 
   const columns = [
@@ -115,7 +117,19 @@ const ComputersPage = () => {
       </Typography.Title>
       <CreateComputer computers={computers} setComputers={setComputers} />
       <Spin spinning={loading}>
-        <Table dataSource={computers} columns={columns} rowKey="distinguished_name" />
+        <Table
+          dataSource={computers}
+          columns={columns}
+          rowKey="distinguished_name"
+          pagination={{
+            current: pagination.current,
+            pageSize: pagination.pageSize,
+            total: pagination.total,
+            showSizeChanger: true,
+            pageSizeOptions: ['3', '10', '50'],
+          }}
+          onChange={handleTableChange}
+        />
       </Spin>
     </Flex>
   );

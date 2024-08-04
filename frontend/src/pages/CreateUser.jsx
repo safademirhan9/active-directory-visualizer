@@ -13,7 +13,6 @@ const CreateUser = ({ users, setUsers }) => {
     setLoading(true);
     try {
       const response = await axios.post('/users/', values);
-      console.log(users);
       setUsers([...users, response.data]);
       notification.success({
         message: 'SUCCESS',

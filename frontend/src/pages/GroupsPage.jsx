@@ -7,38 +7,32 @@ import CreateGroup from './CreateGroup';
 
 const GroupsPage = () => {
   const { token } = theme.useToken();
-  const [page, setPage] = useState(1);
-  const [pageSize] = useState(10);
   const [groups, setGroups] = useState([]);
-  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
 
   useEffect(() => {
-    setLoading(true);
-    const fetchGroups = async () => {
-      try {
-        // TODO: Add pagination support
-        const response = await axios.get('/groups/');
-        console.log(response.data);
-        setGroups(response.data.results);
-        setTotalPages(Math.ceil(response.data.count / pageSize));
-      } catch (error) {
-        console.error('Error fetching groups:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    fetchGroups(pagination.current, pagination.pageSize);
+  }, [pagination.current, pagination.pageSize]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    fetchGroups();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const handlePageChange = async (page) => {
+  const fetchGroups = async (page, pageSize) => {
     setLoading(true);
     try {
-      const response = await axios.get(`/groups/?page=${page}&pageSize=${pageSize}`);
+      const response = await axios.get('/groups/', {
+        params: {
+          page: page,
+          page_size: pageSize,
+        },
+      });
       setGroups(response.data.results);
-      setTotalPages(Math.ceil(response.data.count / pageSize));
-      setPage(page);
+      setPagination({
+        ...pagination,
+        total: response.data.count,
+      });
     } catch (error) {
       console.error('Error fetching groups:', error);
     } finally {
@@ -64,6 +58,14 @@ const GroupsPage = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleTableChange = (newPagination) => {
+    setPagination({
+      ...pagination,
+      current: newPagination.current,
+      pageSize: newPagination.pageSize,
+    });
   };
 
   const columns = [
@@ -115,7 +117,18 @@ const GroupsPage = () => {
       </Typography.Title>
       <CreateGroup groups={groups} setGroups={setGroups} />
       <Spin spinning={loading}>
-        <Table dataSource={groups} columns={columns} rowKey="distinguished_name" />
+        <Table
+          dataSource={groups}
+          columns={columns}
+          rowKey="distinguished_name"
+          pagination={{
+            current: pagination.current,
+            pageSize: pagination.pageSize,
+            total: pagination.total,
+            showSizeChanger: true,
+          }}
+          onChange={handleTableChange}
+        />
       </Spin>
     </Flex>
   );

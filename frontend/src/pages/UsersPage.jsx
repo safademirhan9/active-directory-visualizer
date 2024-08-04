@@ -7,37 +7,32 @@ import CreateUser from './CreateUser';
 
 const UsersPage = () => {
   const { token } = theme.useToken();
-  const [page, setPage] = useState(1);
-  const [pageSize] = useState(10);
   const [users, setUsers] = useState([]);
-  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
 
   useEffect(() => {
-    setLoading(true);
-    const fetchUsers = async () => {
-      try {
-        // TODO: Add pagination support
-        const response = await axios.get('/users/');
-        setUsers(response.data.results);
-        setTotalPages(Math.ceil(response.data.count / pageSize));
-      } catch (error) {
-        console.error('Error fetching users:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    fetchUsers(pagination.current, pagination.pageSize);
+  }, [pagination.current, pagination.pageSize]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    fetchUsers();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const handlePageChange = async (page) => {
+  const fetchUsers = async (page, pageSize) => {
     setLoading(true);
     try {
-      const response = await axios.get(`/users/?page=${page}&pageSize=${pageSize}`);
+      const response = await axios.get('/users/', {
+        params: {
+          page: page,
+          page_size: pageSize,
+        },
+      });
       setUsers(response.data.results);
-      setTotalPages(Math.ceil(response.data.count / pageSize));
-      setPage(page);
+      setPagination({
+        ...pagination,
+        total: response.data.count,
+      });
     } catch (error) {
       console.error('Error fetching users:', error);
     } finally {
@@ -63,6 +58,14 @@ const UsersPage = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleTableChange = (newPagination) => {
+    setPagination({
+      ...pagination,
+      current: newPagination.current,
+      pageSize: newPagination.pageSize,
+    });
   };
 
   const columns = [
@@ -114,7 +117,19 @@ const UsersPage = () => {
       </Typography.Title>
       <CreateUser users={users} setUsers={setUsers} />
       <Spin spinning={loading}>
-        <Table dataSource={users} columns={columns} rowKey="distinguished_name" />
+        <Table
+          dataSource={users}
+          columns={columns}
+          rowKey="distinguished_name"
+          pagination={{
+            current: pagination.current,
+            pageSize: pagination.pageSize,
+            total: pagination.total,
+            showSizeChanger: true,
+            pageSizeOptions: ['3', '10', '50'],
+          }}
+          onChange={handleTableChange}
+        />
       </Spin>
     </Flex>
   );
