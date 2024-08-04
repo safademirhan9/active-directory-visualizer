@@ -12,15 +12,12 @@ function App() {
     <Router>
       <Routes>
         <Route index path="/" element={<Home />} />
-        <Route path="/computers" element={<ComputersPage />}>
-          <Route path=":DistinguishedName" element={<ComputerDetail />} />
-        </Route>
-        <Route path="/users" element={<UsersPage />}>
-          <Route path="/users/:DistinguishedName" element={<UserDetail />} />
-        </Route>
-        <Route path="/groups" element={<GroupsPage />}>
-          <Route path=":DistinguishedName" element={<GroupDetail />} />
-        </Route>
+        <Route path="/computers" element={<ComputersPage />} />
+        <Route path="/computers/:DistinguishedName" element={<ComputerDetail />} />
+        <Route path="/users" element={<UsersPage />} />
+        <Route path="/users/:DistinguishedName" element={<UserDetail />} />
+        <Route path="/groups" element={<GroupsPage />} />
+        <Route path="/groups/:DistinguishedName" element={<GroupDetail />} />
       </Routes>
     </Router>
   );
