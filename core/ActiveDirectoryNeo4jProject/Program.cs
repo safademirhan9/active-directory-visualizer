@@ -11,8 +11,8 @@ namespace ADNeo4jIntegration
         {
             Console.WriteLine("Connecting to Active Directory...");
 
-            string domainController = "192.168.1.57";
-            // string domain = "forestall.local";
+            // Change this to your AD domain details
+            string domainController = "192.168.1.62";
             string username = "admin@forestall.local";
             string password = "Forestall123";
             string db_password = "forestall123";
@@ -21,17 +21,17 @@ namespace ADNeo4jIntegration
             // Connect to the domain context with explicit domain details
             using (PrincipalContext context = new PrincipalContext(ContextType.Domain, domainController, container, username, password))
             {
-                // Define a user principal object to search for users
-                UserPrincipal userPrincipal = new UserPrincipal(context);
-                PrincipalSearcher searcher = new PrincipalSearcher(userPrincipal);
-
                 // Connect to Neo4j
                 var client = new BoltGraphClient(new Uri("bolt://localhost:7687"), "neo4j", db_password);
                 client.ConnectAsync().Wait();
                 Console.WriteLine("Connected to Neo4j.");
 
+                // Define a user principal object to search for users
+                UserPrincipal userPrincipal = new UserPrincipal(context);
+                PrincipalSearcher userSearcher = new PrincipalSearcher(userPrincipal);
+
                 // Iterate over search results
-                foreach (var result in searcher.FindAll())
+                foreach (var result in userSearcher.FindAll())
                 {
                     DirectoryEntry de = result.GetUnderlyingObject() as DirectoryEntry;
                     string name = de.Properties["name"].Value.ToString();
@@ -40,12 +40,13 @@ namespace ADNeo4jIntegration
                     string ntSecurityDescriptor = de.Properties["ntSecurityDescriptor"]?.Value.ToString();
                     // string servicePrincipalName = de.Properties["servicePrincipalName"]?.Value.ToString();
 
-                    Console.WriteLine($"Name: {name}");
+                    Console.WriteLine($"User Name: {name}");
                     Console.WriteLine($"Distinguished Name: {distinguishedName}");
 
                     // Create a new user node in Neo4j
                     var newUser = new
                     {
+                        Name = name,
                         distinguished_name = distinguishedName,
                         object_sid = objectSid,
                         // service_principal_name = servicePrincipalName,
@@ -77,7 +78,7 @@ namespace ADNeo4jIntegration
                     string ntSecurityDescriptor = de.Properties["ntSecurityDescriptor"]?.Value.ToString();
                     // string servicePrincipalName = de.Properties["servicePrincipalName"]?.Value.ToString();
 
-                    Console.WriteLine($"Name: {name}");
+                    Console.WriteLine($"Computer Name: {name}");
                     Console.WriteLine($"Distinguished Name: {distinguishedName}");
 
                     // Create a new computer node in Neo4j
@@ -115,7 +116,7 @@ namespace ADNeo4jIntegration
                     string ntSecurityDescriptor = de.Properties["ntSecurityDescriptor"]?.Value.ToString();
                     //string servicePrincipalName = de.Properties["servicePrincipalName"]?.Value.ToString();
 
-                    Console.WriteLine($"Name: {name}");
+                    Console.WriteLine($"Group Name: {name}");
                     Console.WriteLine($"Distinguished Name: {distinguishedName}");
 
                     // Create a new group node in Neo4j
