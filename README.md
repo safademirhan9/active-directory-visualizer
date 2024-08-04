@@ -15,9 +15,9 @@ This project is designed to visualize objects within an Active Directory (AD) en
 - [Prerequisites](#Prerequisites)
 - [Setting up Active Directory](#Setting-up-Active-Directory)
 - [Setting up Neo4j](#Setting-up-Neo4j)
-- [Core C# Setup](<#Core-(C#)-Setup>)
-- [Backend (Python/Django) Setup](<#Backend-(Python/Django)-Setup>)
-- [Frontend (React) Setup](<#Frontend-(React)-Setup>)
+- [Core C# Setup](#core-c-setup)
+- [Backend (Python/Django) Setup](#backend-pythondjango-setup)
+- [Frontend (React) Setup](#frontend-react-setup)
 - [Running the Application](#Running-the-Application)
 
 ## Prerequisites
@@ -59,11 +59,11 @@ This project is designed to visualize objects within an Active Directory (AD) en
 
 **2. Set up Neo4j Database:**
 
-- Open the Neo4j browser at `http://localhost:7474`.
+- Open the Neo4j browser at `http://localhost:7687`.
 - Log in with the default credentials (neo4j / neo4j) and change the password.
 - Create constraints and indexes as necessary.
 
-## Core (C#) Setup
+## Core C# Setup
 
 **1. Install .NET SDK:**
 
@@ -168,7 +168,13 @@ This project is designed to visualize objects within an Active Directory (AD) en
 
 **1. Start Neo4j:**
 
-- Ensure the Neo4j server is running.
+- Ensure the Neo4j server is running and accessible at `http://localhost:7687`.
+
+**2. Run the Active Directory Environment with a VM:**
+
+- Ensure your AD environment is set up with test data.
+- Create Users, Computers, and Groups in your AD environment.
+- Ensure the AD environment is accessible from the machine running the C# application.
 
 **2. Run the Core (C#) Application:**
 
@@ -188,3 +194,8 @@ This project is designed to visualize objects within an Active Directory (AD) en
   ```sh
   npm run dev
   ```
+- Open your browser and navigate to `http://localhost:5173` to view the visualization.
+- The API endpoints are as follows:
+  - `/api/v1/users/`
+  - `/api/v1/computers/`
+  - `/api/v1/groups/`
